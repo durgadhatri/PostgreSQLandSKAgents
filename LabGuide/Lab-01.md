@@ -115,7 +115,8 @@ In Part 1, we will set up and populate the data in the database, as well as the 
 
 1. Navigate to `C:\LabFiles` and select the `pg-sk-agents-lab` folder.
 
-1. Click on the Elephant icon from the left.  
+1. Click on the Elephant icon from the left. Expand the connection `lab`. 
+   - Note: If a pop appears asking you to signin, select the previously logged in Lab Account and close the browser tab once logged in.
 
 1. In the Object Explorer panel in the top left part of the screen, expand the "Databases" node. Right click the database named "Cases" and Select the option "Connect with PSQL"
 
