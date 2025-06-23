@@ -66,7 +66,6 @@ In Part 1, we will set up and populate the data in the database, as well as the 
 
 	!IMAGE[vscode-ext-login.jpg](instructions291546/vscode-ext-login.jpg)
 
-===
 
 1. Click "Yes, all apps"
 
@@ -76,9 +75,6 @@ In Part 1, we will set up and populate the data in the database, as well as the 
 
 	!IMAGE[vscode-done.jpg](instructions291546/vscode-done.jpg)
 
-===
-
-## Use Connection Dialog to Setup Database Connection
 
 1. Back on the "Connection Dialog", for each of the options, click each drop down and select the following options:
     1. Subscription: Select the only option provided
@@ -100,118 +96,68 @@ In Part 1, we will set up and populate the data in the database, as well as the 
 
 	!IMAGE[vscode-entra-login-confirm.jpg](instructions291546/vscode-entra-login-confirm.jpg)
 
-1. Enter a "Profile Name" such as "lab" for the Connection, and 
-===
-
 1. Back on the "Connection Dialog", you should see your Lab account selected as the "Azure Account".
-    1. Next, click "Test Connection" to ensure you are connected to the database
-    2. Finally, click "Connect" to connect into the database
 
-    	!IMAGE[vscode-connect.jpg](instructions291546/vscode-connect.jpg)
+1. Enter the Connection name as "lab". 
 
-1. Congratulations, you just logged into your Azure PostgreSQL database using Entra ID using the VS Code extension for PostgreSQL!
+1. Next, click "Test Connection" to ensure you are connected to the database.
 
-===
+1. Finally, click "Connect" to connect into the database
 
-## Launch PSQL Command Line Shell in VS Code
+   !IMAGE[vscode-connect.jpg](instructions291546/vscode-connect.jpg)
+   
+   - **Note:** Wait for sometime for the connection to establish
+ 
 
-1. Next we will launch the PSQL command line shell to run a data loading script
-    1. In the Object Explorer panel in the top left part of the screen, expand the "Databases" node
-    2. Right click the database named "Cases"
-    3. Select the option "Connect with PSQL"
+## Task 3: Launch PSQL Command Line Shell in VS Code
 
-		!IMAGE[connect-with-psql.jpg](instructions291546/connect-with-psql.jpg)
+1. Click on Files from the top left corner and select Select Folder. 
 
-1. This will open the PSQL Command Line Shell in the VS Code Terminal
-    1. Once PSQL loads, you should see a command line shell like `cases=>`
-    2. To confirm we are in the correct folder context, enter the command: `\! cd`
-    3. This should return the folder location: `C:\Users\LabUser\Downloads\pg-sk-agents-lab`
+1. Navigate to `C:\LabFiles` and select the `pg-sk-agents-lab` folder.
 
-		!IMAGE[psql-cmdline.jpg](instructions291546/psql-cmdline.jpg)
+1. Click on the Elephant icon from the left.  
 
-===
+1. In the Object Explorer panel in the top left part of the screen, expand the "Databases" node. Right click the database named "Cases" and Select the option "Connect with PSQL"
 
-## Populate the Database with Sample Data
+    !IMAGE[connect-with-psql.jpg](instructions291546/connect-with-psql.jpg)
 
-We will add a couple of tables to the <code spellcheck="false">cases</code> database and populate them with sample data to have information to work with throughout this lab.
+1. This will open the PSQL Command Line Shell in the VS Code Terminal. Once PSQL loads, you should see a command line shell like `cases=>`
 
-1. At the PSQL Command Line Shell, run the following commands to create the <code spellcheck="false">cases</code> tables and data:
+1. To confirm we are in the correct folder context, enter the command: `\! cd`. This should return the folder location: `C:\LabFiles\pg-sk-agents-lab`
 
-    > +++\i ./Scripts/initialize_dataset.sql;+++
+   !IMAGE[psql-cmdline.jpg](instructions291546/psql-cmdline.jpg)
 
-1. This will produce results like these below
 
-	!IMAGE[psql-load-data.jpg](instructions291546/psql-load-data.jpg)
+1. At the PSQL Command Line Shell, run the following command to add a couple of tables to the cases database and populate them with sample data.
+   
+   ```
+    \i ./Scripts/initialize_dataset.sql;
+   ```
 
-### Explore Database
+1. Execute the following command to allow the extended display to be automatically applied.
 
-1. When working with <code spellcheck="false">psql</code> at the VS Code Command Line Shell, enabling the extended display for query results may be helpful, as it improves the readability of output for subsequent commands. Execute the following command to allow the extended display to be automatically applied.
+   ```
+   \x auto
+   ```   
+   
+1. We will retrieve a sample of data from the cases table in our cases dataset. This allows us to examine the structure and content of the data stored in the database.
 
-    > +++\x auto+++
-
-1. First we will retrieve a sample of data from the cases table in our cases dataset. This allows us to examine the structure and content of the data stored in the database.
-
-    > +++SELECT name FROM cases LIMIT 5;+++
-
-===
-
-## Install and configure the <code spellcheck="false">azure_ai</code> extension
-
->[!alert] Make sure you continue to use the **VS Code PSQL Command Line Shell** for the following steps.
-
-Before using the <code spellcheck="false">azure_ai</code> extension, you must install it into your database and configure it to connect to your Azure AI Services resources. The <code spellcheck="false">azure_ai</code> extension allows you to integrate the Azure OpenAI and Azure AI Language services into your database. To enable the extension in your database, follow these steps:
-
-1. Execute the following command in **VS Code PSQL Command Line Shell** to verify that the <code spellcheck="false">azure_ai</code>, <code spellcheck="false">vector</code>, <code spellcheck="false">age</code> and <code spellcheck="false">pg_diskann</code> extensions were successfully added to your server's *allowlist* by the Bicep deployment script that was ran automatically when your lab environment setup:
-
-	> +++SHOW azure.extensions;+++
-
-The command displays the list of extensions on the server's *allowlist*.
-If everything was correctly installed, your output must include `azure_ai`, `vector`, `age` and `pg_diskann` like this:
-
-```sql-nocopy
-azure.extensions 
-------------------
-azure_ai,vector,age,pg_diskann
-```
-
-> [!note] For future reference, before an extension can be installed and used in an Azure Database for PostgreSQL flexible server database, it must be added to the server's *allowlist*, as described in [how to use PostgreSQL extensions](https://learn.microsoft.com/azure/postgresql/flexible-server/concepts-extensions#how-to-use-postgresql-extensions).
-
-2. Now, you are ready to install the <code spellcheck="false">azure_ai</code> extension using the [CREATE EXTENSION](https://www.postgresql.org/docs/current/sql-createextension.html) command.  Run the following command on the PSQL Command Shell:
-
-	> +++CREATE EXTENSION IF NOT EXISTS azure_ai;+++
+   ```
+   SELECT name FROM cases LIMIT 5;
+   ```
     
-<code spellcheck="false">CREATE EXTENSION</code> loads a new extension into the database by running its script file. This script typically creates new SQL objects such as functions, data types, and schemas. An error is thrown if an extension of the same name already exists. Adding <code spellcheck="false">IF NOT EXISTS</code> allows the command to execute without throwing an error if it is already installed.
+1. Execute the following command in **VS Code PSQL Command Line Shell** to verify the extensions in your server's *allowlist* 
 
-===
+   ```
+   SHOW azure.extensions;
+   ```
+
 
 ### Explore the Azure AI schema and Setup `azure_ai` extension
 
-The <code spellcheck="false">azure_ai</code> schema provides the framework for directly interacting with Azure AI and ML services from your database. It contains functions for setting up connections to those services and retrieving them from the <code spellcheck="false">settings</code> table, which is also hosted in the same schema. The <code spellcheck="false">settings</code> table provides secure storage in the database for endpoints and keys associated with your Azure AI and ML services.
-
-1. Review the functions defined in the  <code spellcheck="false">azure_ai</code> schema.
-    1. You can review the full schema details in the [Microsoft Documentation](https://learn.microsoft.com/en-us/azure/postgresql/flexible-server/generative-ai-azure-overview#configure-the-azure_ai-extension)
-
-
-         Schema   |  Name       | Result data type | Argument data types  | Type
-        ----------|-------------|-----------|-----------------------------|------
-         azure_ai | get_setting | text      | key text                    | func
-         azure_ai | set_setting | void      | key text, value text        | func
-         azure_ai | version		| text      |                             | func
-
-		<br>
-
-		> [!knowledge] Because the connection information for Azure AI services, including API keys, is stored in a configuration table in the database, the <code 							spellcheck="false">azure_ai</code> extension defines a role called <code spellcheck="false">azure_ai_settings_manager</code> to ensure this information is protected and accessible only to users who have been assigned that role. This role enables reading and writing of settings related to the extension. Only members of the <code spellcheck="false">azure_ai_settings_manager</code> role can invoke the <code spellcheck="false">azure_ai.get_setting()</code> and <code spellcheck="false">azure_ai.set_setting()</code> functions. In an Azure Database for PostgreSQL flexible server, all admin users (those with the <code spellcheck="false">azure_pg_admin</code> role assigned) are also assigned the <code spellcheck="false">azure_ai_settings_manager</code> role.
-    
-    <br>
-
-1. To demonstrate how you use the <code spellcheck="false">azure_ai.set_setting()</code> and <code spellcheck="false">azure_ai.get_setting()</code> functions, configure the connection to your Azure OpenAI account:
-
-    1. To make getting the Azure OpenAI Endpoint and Key a little easier, we have a PowerShell script to grab them:
-    1. Open "Terminal" by clicking the Terminal icon in the Task Menu
-		<br>!IMAGE[terminal-icon.jpg](instructions291546/terminal-icon.jpg)
-	1. Navigate to the path below using the following command: `cd C:\users\labuser\downloads\pg-sk-agents-lab\scripts\`
-    1. Enter the following script name to run it: `.\get_env.ps1`
-    1. Copy the values for `AZURE_OPENAI_ENDPOINT` and `AZURE_OPENAI_KEY`
+1. Open "Terminal" by clicking the Terminal icon in the Task Menu. Navigate to the path below using the following command: `cd C:\users\labuser\downloads\pg-sk-agents-lab\scripts\`
+1. Enter the following script name to run it: `.\get_env.ps1`
+1. Copy the values for `AZURE_OPENAI_ENDPOINT` and `AZURE_OPENAI_KEY`
 
 1. Once you have your endpoint and key, go back to VS Code and the PSQL Command Shell, then use the commands below to add your values to the configuration table. Ensure you replace the <code spellcheck="false">{AZURE_OPENAI_ENDPOINT}</code> and <code spellcheck="false">{AZURE_OPENAI_KEY}</code> tokens with the values you copied from the script output.
 
@@ -466,20 +412,6 @@ which prints something like:
 
 To intuitively understand semantic search, observe that the opinion mentioned doesn't actually contain the terms <code spellcheck="false">"Water leaking into the apartment from the floor above."</code>. However it does highlight a document with a section that says <code spellcheck="false">"nonsuit and dismissal, in an action brought by a tenant to recover damages for injuries to her goods, caused by leakage of water from an upper story"</code> which is similar.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-===
 
 #  Part 3 - Build the Agentic App
 
